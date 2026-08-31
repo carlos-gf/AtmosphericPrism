@@ -1,6 +1,8 @@
-# Do you recognise this atmosphere?
+# Atmospheric Prism
 
 Kaleidoscope booth demo for **Histogram Perfect**, VRSJ 2026.
+
+**Live: https://carlos-gf.github.io/AtmosphericPrism/**
 
 A triangular mirror prism, 160 mm to a side, stands on an iPad Pro 11" in
 portrait. Under it the screen shows one RPCA image; the mirrors tile that
@@ -14,18 +16,28 @@ left in it, is still enough to build an environment out of.
 
 ---
 
-## Two builds, same code
+## Running it
 
-| | what it is | when to use it |
-|---|---|---|
-| `app/` | ordinary web folder | GitHub Pages, then **Add to Home Screen** on the iPad. Works offline after the first load. |
-| `kaleidoscope_standalone.html` | one 11 MB file, images and all | AirDrop to the iPad, open from Files. No server, no network, no setup. |
+This repository *is* the app — no build step, no dependencies, no package.json.
+Settings → Pages → branch `main`, folder `/ (root)`, and it is live at the URL
+above. On the iPad it is then installed with *Add to Home Screen*, and a service
+worker keeps it working with the wifi switched off.
 
-The standalone is generated from `app/` by `python3 build_standalone.py`, so the
-two cannot drift apart. Edit `app/`, rebuild, never edit the standalone.
+To run it locally, use any static server; ES modules will not load over
+`file://`:
 
-**Take both to the venue.** The home-screen version is the good experience;
-the standalone is the one that still works when the wifi does not.
+```
+python3 -m http.server 8000
+```
+
+A single-file build with every image inlined, `kaleidoscope_standalone.html`,
+is generated from this folder by `python3 build_standalone.py` — so the two can
+never drift apart. Edit the folder, rebuild, never edit the standalone.
+
+**The standalone will not run on an iPad.** Tapping an HTML file in the iOS
+Files app opens Quick Look, which renders the page but executes no JavaScript,
+so it sits on "loading" for ever. On iOS the Pages URL is the only route. On a
+laptop with no server to hand it is the quickest way to see the demo.
 
 ---
 
@@ -58,7 +70,7 @@ is the iPad Pro 11", every generation) and the millimetres follow.
 
 ## Changing the words
 
-Everything a visitor reads lives in `app/js/scenes.js`, one block per scene:
+Everything a visitor reads lives in `js/scenes.js`, one block per scene:
 
 ```js
 {
@@ -88,7 +100,7 @@ Two decisions worth keeping if you rewrite them:
 Two `place` fields are still generic (`river`, `fireworks`) because the demo's
 `labels.txt` never had them filled in. Add them when you know them.
 
-After editing, rebuild the standalone and **bump `CACHE` in `app/sw.js`** —
+After editing, rebuild the standalone and **bump `CACHE` in `sw.js`** —
 otherwise the iPad keeps serving the version it already cached.
 
 ---
@@ -131,6 +143,3 @@ next person always arrives at a question rather than someone else's reveal.
 Two minutes of silence and it reshuffles for a new visitor.
 
 ---
-
-Carlos Garcia Fernandez, Takatoshi Yoshida, Kouta Minamizawa —
-Keio University Graduate School of Media Design.
