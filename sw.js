@@ -7,7 +7,7 @@
    Bump CACHE when you change the words, the images or the code, otherwise the
    iPad will keep serving the version it already has. */
 
-const CACHE = 'hp-kaleido-v1';
+const CACHE = 'hp-kaleido-v2';
 
 const SCENE_IDS = [
   'bangkok', 'fireworks', 'fuji', 'hamburg', 'hiyoshi',
@@ -22,7 +22,9 @@ const ASSETS = [
   'js/scenes.js',
   'manifest.webmanifest',
   'icon.png',
-  ...SCENE_IDS.flatMap(id => [`img/${id}_rpca.jpg`, `img/${id}_src.jpg`]),
+  ...SCENE_IDS.flatMap(id => [
+    `img/${id}_rpca.jpg`, `img/${id}_src.jpg`, `img/${id}_thumb.jpg`,
+  ]),
 ];
 
 self.addEventListener('install', e => {

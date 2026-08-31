@@ -55,12 +55,15 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 }
 body.flip #prism { clip-path: polygon(0% 0%, 100% 0%, 50% 100%); }
 
+/* `fill`, not `cover`: the images are generated at the triangle's own bounding
+   box, with the RPCA permutation computed over the triangle only. Any other
+   fit would rescale them and slide the baked-in edges away from the clip path. */
 #prism img {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: fill;
   opacity: 0;
   transition: opacity .65s ease;
 }
@@ -93,6 +96,10 @@ body.flip #prism { clip-path: polygon(0% 0%, 100% 0%, 50% 100%); }
 }
 body.ready #panel { opacity: 1; }
 
+/* The question and its options are one thing and sit together; the navigation
+   is a different thing and lives at the bottom, in reach of a thumb. */
+#ask { display: flex; flex-direction: column; gap: 20px; }
+
 #head { text-align: center; min-height: 62px; }
 
 #question {
@@ -120,12 +127,12 @@ body.ready #panel { opacity: 1; }
 }
 
 .opt {
-  min-height: 92px;
-  padding: 10px 14px;
+  min-height: 62px;
+  padding: 8px 12px;
   border: 1px solid var(--line);
-  border-radius: 16px;
+  border-radius: 13px;
   background: var(--panel);
-  font-size: 20px;
+  font-size: 17px;
   line-height: 1.25;
   text-align: center;
   transition: transform .12s ease, border-color .25s ease,
@@ -142,9 +149,9 @@ body.ready #panel { opacity: 1; }
 .opt.truth::after {
   content: "";
   display: block;
-  width: 22px;
+  width: 20px;
   height: 2px;
-  margin: 8px auto 0;
+  margin: 6px auto 0;
   background: var(--gold);
 }
 
@@ -158,23 +165,36 @@ body.answered .opt { pointer-events: none; }
   justify-content: space-between;
 }
 
+/* The navigation buttons carry a blurred sample of the atmosphere they lead to,
+   so moving through the set is a choice of destination rather than a direction.
+   The thumbnails are blurred when they are generated, not with a CSS filter,
+   which keeps the arrow itself sharp and costs nothing to paint. The inset
+   shadow holds them dark: they sit close enough to the prism that a bright
+   circle would reach the mirrors. */
 .round {
-  width: 70px;
-  height: 70px;
+  position: relative;
+  width: 112px;
+  height: 112px;
   border-radius: 50%;
-  border: 1px solid var(--line);
-  font-size: 32px;
+  border: 1px solid #33363D;
+  font-size: 40px;
   line-height: 1;
-  color: var(--dim);
-  transition: transform .12s ease, border-color .25s, color .25s, background-color .25s;
+  color: var(--ink);
+  background-color: var(--panel);
+  background-size: cover;
+  background-position: center;
+  box-shadow: inset 0 0 0 999px rgba(0, 0, 0, .45);
+  text-shadow: 0 1px 6px rgba(0, 0, 0, .9);
+  transition: transform .12s ease, border-color .25s, box-shadow .25s;
 }
-.round:active { transform: scale(.94); }
+.round:active { transform: scale(.95); }
 
-/* once answered, "next" is the thing to press */
+/* Once answered, "next" is the thing to press: the atmosphere behind it comes
+   up out of the dark and a gold ring picks it out. */
 body.answered #next {
   border-color: var(--gold);
-  background: var(--gold);
-  color: #14150F;
+  box-shadow: inset 0 0 0 999px rgba(0, 0, 0, .18), 0 0 0 3px rgba(242, 176, 75, .22);
+  color: #FFF;
 }
 
 #dots { display: flex; gap: 8px; }
@@ -313,8 +333,8 @@ body.answered #next {
 /* On a laptop the triangle would be far wider than the window; app.js clamps
    it, and this keeps the panel usable while testing. */
 @media (max-height: 800px) {
-  .opt { min-height: 66px; font-size: 17px; }
-  .round { width: 56px; height: 56px; font-size: 26px; }
+  .opt { min-height: 50px; font-size: 15px; }
+  .round { width: 74px; height: 74px; font-size: 28px; }
   #question { font-size: 20px; }
   #panel { padding: 14px 16px 12px; }
 }

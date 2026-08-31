@@ -109,7 +109,7 @@ function srcOf(id, kind) {
 }
 
 const urls = [];
-for (const s of SCENES) urls.push(srcOf(s.id, 'rpca'), srcOf(s.id, 'src'));
+for (const s of SCENES) urls.push(srcOf(s.id, 'rpca'), srcOf(s.id, 'src'), srcOf(s.id, 'thumb'));
 
 /* Nothing here may be able to hang. An iPad that sits on "loading" forever is
    worse than one that starts with a missing picture: the images are only ever
@@ -222,8 +222,17 @@ function show() {
   });
 
   markDots();
+  paintNav();
   shownAt = performance.now();
   armIdle();
+}
+
+/* Each arrow wears a blurred sample of the atmosphere it leads to, so the
+   choice reads as "that one next" rather than "forward". */
+function paintNav() {
+  const at = i => SCENES[order[(i + order.length) % order.length]].id;
+  $('prev').style.backgroundImage = `url("${srcOf(at(pos - 1), 'thumb')}")`;
+  $('next').style.backgroundImage = `url("${srcOf(at(pos + 1), 'thumb')}")`;
 }
 
 function answer(scene, chosen, btn) {
@@ -262,10 +271,11 @@ function answer(scene, chosen, btn) {
   armIdle();
 }
 
+/* Wraps rather than reshuffling at the end of a round, so the picture on the
+   arrow is always the picture you actually get. Reshuffling happens when the
+   booth falls quiet and a new visitor is assumed. */
 function go(delta) {
-  pos += delta;
-  if (pos >= order.length) { newSequence(); }      // a full round: reshuffle
-  else if (pos < 0) { pos = order.length - 1; }
+  pos = (pos + delta + order.length) % order.length;
   show();
 }
 

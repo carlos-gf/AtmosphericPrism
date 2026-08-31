@@ -41,6 +41,53 @@ laptop with no server to hand it is the quickest way to see the demo.
 
 ---
 
+## The images are generated for the triangle, not cropped to it
+
+This matters more than it sounds. The study's stimuli were produced over the
+full 900 × 900 square. Clipping one of those to a triangle for the kaleidoscope
+quietly breaks the method's only guarantee: the permutation moves pixels across
+the whole square, so half of them land outside the triangle and are never seen,
+and what appears in the mirrors no longer holds the source's colour histogram.
+It would look right and be wrong.
+
+So the images here are regenerated with the permutation **restricted to the
+triangle**. The pixels inside it are sorted by hue, the blurred-luminance field
+values inside it are sorted, and the two are matched — source set and
+destination set are the same set, so the visible triangle preserves the
+histogram of the source's triangle exactly. `gen/rpca_triangle.mjs` asserts this
+on every build: total histogram drift is **0** for all ten scenes.
+
+Everything else is the verified port of `sketch_260201f_base.pde` — the
+parabolic `filter(BLUR, 18)`, the `float[]` sort keys, `java.awt.Color.RGBtoHSB`
+— reused unchanged. Only the domain is different.
+
+Two details worth keeping if you regenerate:
+
+- **The blur still runs over the whole rectangle.** Its kernel is 63 px wide and
+  the pixels just outside the triangle are real neighbours in the photograph.
+  Masking them to black first would ring the field along the edges and drag the
+  permutation toward the rim. Only the *selection* is masked.
+- **Content is carried about 3 px past the clip edge.** JPEG ringing against a
+  hard black boundary would otherwise show as a dark halo just inside the
+  triangle. The clip path cuts through picture instead of through an edge.
+
+The output is 900 × 779 — the triangle's own bounding box, 2/√3 — which is why
+the CSS uses `object-fit: fill`. Any other fit rescales the image and slides the
+baked-in edges off the clip path.
+
+To rebuild the images from the 900 × 900 study sources:
+
+```
+python3 gen/dump.py           gen/bin   # crop to what the prism shows
+node    gen/rpca_triangle.mjs gen/bin gen/out
+python3 gen/pack.py           gen/out   img
+```
+
+`gen/lib/` is the verified Histogram Perfect port, vendored so this reproduces
+without the web app checked out beside it.
+
+---
+
 ## Setting up the iPad
 
 1. **Install it.** Open the Pages URL in Safari → Share → *Add to Home Screen*.
@@ -143,3 +190,6 @@ next person always arrives at a question rather than someone else's reveal.
 Two minutes of silence and it reshuffles for a new visitor.
 
 ---
+
+Carlos Garcia Fernandez, Takatoshi Yoshida, Kouta Minamizawa —
+Keio University Graduate School of Media Design.
