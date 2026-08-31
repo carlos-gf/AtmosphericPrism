@@ -89,16 +89,24 @@ body.flip #prism { clip-path: polygon(0% 0%, 100% 0%, 50% 100%); }
   bottom: 0;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  padding: 22px 20px calc(14px + env(safe-area-inset-bottom));
+  justify-content: flex-end;      /* everything sits low, away from the prism */
+  gap: 22px;
+  padding: 22px 20px calc(26px + env(safe-area-inset-bottom));
   opacity: 0;
   transition: opacity .4s ease;
 }
 body.ready #panel { opacity: 1; }
 
-/* The question and its options are one thing and sit together; the navigation
-   is a different thing and lives at the bottom, in reach of a thumb. */
 #ask { display: flex; flex-direction: column; gap: 20px; }
+
+/* The two navigation keys flank the options rather than sitting under them:
+   moving through the set and naming what you see stay one gesture apart. */
+#row {
+  display: grid;
+  grid-template-columns: 78px 1fr 78px;
+  gap: 14px;
+  align-items: stretch;
+}
 
 #head { text-align: center; min-height: 62px; }
 
@@ -159,25 +167,15 @@ body.answered .opt { pointer-events: none; }
 
 /* ---------- previous / next ---------- */
 
-#nav {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-/* The navigation buttons carry a blurred sample of the atmosphere they lead to,
-   so moving through the set is a choice of destination rather than a direction.
-   The thumbnails are blurred when they are generated, not with a CSS filter,
-   which keeps the arrow itself sharp and costs nothing to paint. The inset
-   shadow holds them dark: they sit close enough to the prism that a bright
-   circle would reach the mirrors. */
-.round {
-  position: relative;
-  width: 112px;
-  height: 112px;
-  border-radius: 50%;
+/* Each key carries a blurred sample of the atmosphere it leads to, so moving
+   through the set is a choice of destination rather than a direction. The
+   thumbnails are blurred when they are generated rather than with a CSS filter,
+   which keeps the arrow sharp and costs nothing to paint. The inset shadow
+   holds them dark; anything bright down here still reaches the mirrors. */
+.side {
+  border-radius: 22px;
   border: 1px solid #33363D;
-  font-size: 40px;
+  font-size: 34px;
   line-height: 1;
   color: var(--ink);
   background-color: var(--panel);
@@ -187,17 +185,17 @@ body.answered .opt { pointer-events: none; }
   text-shadow: 0 1px 6px rgba(0, 0, 0, .9);
   transition: transform .12s ease, border-color .25s, box-shadow .25s;
 }
-.round:active { transform: scale(.95); }
+.side:active { transform: scale(.96); }
 
 /* Once answered, "next" is the thing to press: the atmosphere behind it comes
-   up out of the dark and a gold ring picks it out. */
+   up out of the dark and a gold edge picks it out. */
 body.answered #next {
   border-color: var(--gold);
   box-shadow: inset 0 0 0 999px rgba(0, 0, 0, .18), 0 0 0 3px rgba(242, 176, 75, .22);
   color: #FFF;
 }
 
-#dots { display: flex; gap: 8px; }
+#dots { display: flex; gap: 8px; justify-content: center; }
 #dots i {
   width: 8px; height: 8px;
   border-radius: 50%;
@@ -256,10 +254,13 @@ body.answered #next {
 
 /* ---------- the hidden corner ---------- */
 
+/* Top right: outside the triangle even at its widest, nowhere near anything a
+   visitor has a reason to touch, and easy to find by feel while the prism is
+   still standing on the glass. */
 #hot {
   position: fixed;
-  left: 0;
-  bottom: 0;
+  top: 0;
+  right: 0;
   width: 54px;
   height: 54px;
   z-index: 50;
@@ -334,7 +335,8 @@ body.answered #next {
    it, and this keeps the panel usable while testing. */
 @media (max-height: 800px) {
   .opt { min-height: 50px; font-size: 15px; }
-  .round { width: 74px; height: 74px; font-size: 28px; }
+  .side { font-size: 26px; border-radius: 16px; }
+  #row { grid-template-columns: 60px 1fr 60px; }
   #question { font-size: 20px; }
-  #panel { padding: 14px 16px 12px; }
+  #panel { padding: 14px 16px 14px; gap: 14px; }
 }

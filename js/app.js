@@ -405,8 +405,8 @@ function wireAdmin() {
     armIdle();
   });
 
-  /* Five taps in the bottom-left corner. Out of reach of the prism, far from
-     anything a visitor has a reason to touch, and invisible. */
+  /* Five taps in the top-right corner. Clear of the triangle, far from anything
+     a visitor has a reason to touch, and invisible. */
   let taps = 0, firstTap = 0;
   $('hot').addEventListener('click', () => {
     const now = Date.now();
