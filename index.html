@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Do you recognise this atmosphere?</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Atmosphere">
+<meta name="theme-color" content="#000000">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon.png">
+<link rel="icon" href="icon.png">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- everything the prism sits on -->
+<div id="prism" aria-hidden="true">
+  <img id="imgA" alt="">
+  <img id="imgB" alt="">
+</div>
+<svg id="outline" aria-hidden="true" hidden><polygon points=""></polygon></svg>
+
+<!-- everything outside the prism -->
+<main id="panel">
+  <div id="head">
+    <p id="question">What atmosphere is this?</p>
+    <p id="place"></p>
+  </div>
+
+  <div id="options"></div>
+
+  <nav id="nav">
+    <button id="prev" class="round" aria-label="Previous atmosphere">&#8249;</button>
+    <div id="counter"><span id="dots"></span></div>
+    <button id="next" class="round" aria-label="Next atmosphere">&#8250;</button>
+  </nav>
+</main>
+
+<!-- shown until the images are in memory -->
+<div id="splash">
+  <p class="big">Do you recognise this atmosphere?</p>
+  <div id="loadbar"><i></i></div>
+  <p id="loadtext">loading</p>
+  <button id="begin" hidden>Touch to begin</button>
+  <p id="credit">HISTOGRAM PERFECT &middot; VRSJ 2026 &middot; KEIO MEDIA DESIGN</p>
+</div>
+
+<!-- invisible 5-tap corner that opens the settings -->
+<button id="hot" aria-label="Settings"></button>
+
+<div id="admin" hidden>
+  <h1>Booth settings</h1>
+
+  <section>
+    <h2>Prism alignment</h2>
+    <div class="row"><span>Triangle side</span><span class="val" id="v-side"></span>
+      <button data-adj="side" data-d="-0.5">−</button><button data-adj="side" data-d="0.5">+</button></div>
+    <div class="row"><span>Screen density</span><span class="val" id="v-ppi"></span>
+      <button data-adj="ppi" data-d="-1">−</button><button data-adj="ppi" data-d="1">+</button></div>
+    <div class="row"><span>Move down</span><span class="val" id="v-top"></span>
+      <button data-adj="top" data-d="-2">−</button><button data-adj="top" data-d="2">+</button></div>
+    <div class="row"><span>Move right</span><span class="val" id="v-left"></span>
+      <button data-adj="left" data-d="-1">−</button><button data-adj="left" data-d="1">+</button></div>
+    <div class="row"><span>Point of triangle</span><span class="val" id="v-flip"></span>
+      <button data-toggle="flip">flip</button><span></span></div>
+    <div class="row"><span>Alignment outline</span><span class="val" id="v-line"></span>
+      <button data-toggle="outline">toggle</button><span></span></div>
+    <p class="hint">Turn the outline on, stand the prism on the screen, and nudge
+      until the mirrors sit exactly on the line. The size is in millimetres of
+      real glass, so 160 means 160.</p>
+  </section>
+
+  <section>
+    <h2>Answers</h2>
+    <p id="stats" class="stat"></p>
+    <div class="row wide">
+      <button id="dl">Download CSV</button>
+      <button id="cp">Copy CSV</button>
+      <button id="wipe" class="danger">Erase all</button>
+    </div>
+    <textarea id="csv" readonly rows="6" spellcheck="false"></textarea>
+    <p class="hint">Answers are kept on this iPad only, in the browser. Copy or
+      download them before the end of the day &mdash; clearing Safari's website
+      data erases them.</p>
+  </section>
+
+  <button id="close">Back to the demo</button>
+  <p class="hint credit">Histogram Perfect &middot; VRSJ 2026 &middot; Carlos Garcia Fernandez,
+    Takatoshi Yoshida, Kouta Minamizawa &middot; Keio University Graduate School of Media Design</p>
+</div>
+
+<script type="module" src="js/app.js"></script>
+</body>
+</html>
