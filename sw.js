@@ -7,7 +7,7 @@
    Bump CACHE when you change the words, the images or the code, otherwise the
    iPad will keep serving the version it already has. */
 
-const CACHE = 'hp-kaleido-v2';
+const CACHE = 'hp-kaleido-v3';
 
 const SCENE_IDS = [
   'bangkok', 'fireworks', 'fuji', 'hamburg', 'hiyoshi',

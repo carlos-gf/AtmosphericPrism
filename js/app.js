@@ -22,7 +22,7 @@ const SIDE_MM_DEFAULT = 160;      // the prism Carlos actually has
 const PPI_DEFAULT     = 264;      // iPad Pro 11", all generations
 const ROOT3_2         = Math.sqrt(3) / 2;
 
-const IDLE_AFTER_ANSWER = 40000;  // move on so the next person sees a question
+const REVEAL_MS_DEFAULT = 10000;  // how long the source photograph stays up
 const IDLE_RESET        = 120000; // nobody is here: start a fresh sequence
 
 const CAL_KEY = 'hp.kaleido.cal.v1';
@@ -40,6 +40,7 @@ let cal = {
   left: 0,        // css px, nudge from centred
   flip: false,    // false = apex up
   outline: false,
+  revealMs: REVEAL_MS_DEFAULT,
 };
 
 let order = [];        // indices into SCENES, shuffled per visitor
@@ -288,7 +289,7 @@ function go(delta) {
 function armIdle() {
   clearTimeout(idleTimer);
   clearTimeout(resetTimer);
-  if (answered) idleTimer = setTimeout(() => go(1), IDLE_AFTER_ANSWER);
+  if (answered) idleTimer = setTimeout(() => go(1), cal.revealMs);
   resetTimer = setTimeout(() => { newSequence(); show(); }, IDLE_RESET);
 }
 
@@ -334,6 +335,7 @@ function paintAdmin() {
   $('v-left').textContent = (cal.left > 0 ? '+' : '') + cal.left + ' px';
   $('v-flip').textContent = cal.flip ? 'down' : 'up';
   $('v-line').textContent = cal.outline ? 'on' : 'off';
+  $('v-reveal').textContent = (cal.revealMs / 1000).toFixed(0) + ' s';
 
   const log = readLog();
   const matched = log.filter(r => r.match).length;
@@ -351,6 +353,8 @@ function wireAdmin() {
 
     if (b.dataset.adj) {
       const d = parseFloat(b.dataset.d);
+      if (b.dataset.adj === 'reveal')
+        cal.revealMs = Math.max(3000, Math.min(60000, cal.revealMs + d * 1000));
       if (b.dataset.adj === 'side') cal.sideMm = Math.max(40, Math.min(400, cal.sideMm + d));
       if (b.dataset.adj === 'ppi') cal.ppi = Math.max(100, Math.min(600, cal.ppi + d));
       if (b.dataset.adj === 'top') cal.top = Math.max(0, cal.top + d);
@@ -407,12 +411,26 @@ function wireAdmin() {
 
   /* Five taps in the top-right corner. Clear of the triangle, far from anything
      a visitor has a reason to touch, and invisible. */
-  let taps = 0, firstTap = 0;
-  $('hot').addEventListener('click', () => {
+  /* Five taps in the top-right corner. It is now drawn — a faint outline —
+     because hunting for an invisible target while a prism sits on the glass is
+     miserable, and it brightens as the taps land so you can see the count. */
+  let taps = 0, firstTap = 0, tapReset = null;
+  const hot = $('hot');
+
+  const showTaps = n => {
+    hot.dataset.taps = String(n);
+    clearTimeout(tapReset);
+    if (n) tapReset = setTimeout(() => { taps = 0; showTaps(0); }, 3000);
+  };
+
+  hot.addEventListener('click', () => {
     const now = Date.now();
     if (now - firstTap > 3000) { taps = 0; firstTap = now; }
-    if (++taps < 5) return;
+    taps++;
+    if (taps < 5) return showTaps(taps);
+
     taps = 0;
+    showTaps(0);
     $('admin').hidden = false;
     paintAdmin();
     clearTimeout(idleTimer);

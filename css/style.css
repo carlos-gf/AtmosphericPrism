@@ -17,6 +17,9 @@
   --tri-top: 20px;        /* computed */
   --tri-left: 2px;        /* computed */
 
+  --opt-h: 62px;                       /* one option button */
+  --nav: 136px;                        /* square: two options plus their gap */
+
   --ink: #E8E4DC;
   --dim: #7E8189;
   --gold: #F2B04B;
@@ -103,7 +106,7 @@ body.ready #panel { opacity: 1; }
    moving through the set and naming what you see stay one gesture apart. */
 #row {
   display: grid;
-  grid-template-columns: 78px 1fr 78px;
+  grid-template-columns: var(--nav) 1fr var(--nav);
   gap: 14px;
   align-items: stretch;
 }
@@ -135,12 +138,12 @@ body.ready #panel { opacity: 1; }
 }
 
 .opt {
-  min-height: 62px;
-  padding: 8px 12px;
+  min-height: var(--opt-h);
+  padding: 8px 10px;
   border: 1px solid var(--line);
   border-radius: 13px;
   background: var(--panel);
-  font-size: 17px;
+  font-size: 16px;
   line-height: 1.25;
   text-align: center;
   transition: transform .12s ease, border-color .25s ease,
@@ -172,8 +175,10 @@ body.answered .opt { pointer-events: none; }
    thumbnails are blurred when they are generated rather than with a CSS filter,
    which keeps the arrow sharp and costs nothing to paint. The inset shadow
    holds them dark; anything bright down here still reaches the mirrors. */
+/* Square, and the same height as the block of options, so the three read as
+   one object rather than a row of unrelated controls. */
 .side {
-  border-radius: 22px;
+  border-radius: 20px;
   border: 1px solid #33363D;
   font-size: 34px;
   line-height: 1;
@@ -254,18 +259,26 @@ body.answered #next {
 
 /* ---------- the hidden corner ---------- */
 
-/* Top right: outside the triangle even at its widest, nowhere near anything a
-   visitor has a reason to touch, and easy to find by feel while the prism is
-   still standing on the glass. */
+/* Top right, outside the triangle even at its widest. Drawn rather than
+   invisible: hunting for an unmarked target with a prism sitting on the glass
+   is miserable. The outline is dark enough to disappear from a metre away, and
+   it brightens as the five taps land so the count is visible. */
 #hot {
   position: fixed;
-  top: 0;
-  right: 0;
-  width: 54px;
-  height: 54px;
+  top: 10px;
+  right: 10px;
+  width: 46px;
+  height: 46px;
+  border: 1px solid #2E3138;
+  border-radius: 10px;
+  background: none;
   z-index: 50;
-  opacity: 0;
+  transition: border-color .2s ease, background-color .2s ease;
 }
+#hot[data-taps="1"] { border-color: #3C4048; }
+#hot[data-taps="2"] { border-color: #4C515B; }
+#hot[data-taps="3"] { border-color: #5F6570; }
+#hot[data-taps="4"] { border-color: var(--gold); background: rgba(242,176,75,.08); }
 
 /* ---------- settings ---------- */
 
@@ -334,9 +347,9 @@ body.answered #next {
 /* On a laptop the triangle would be far wider than the window; app.js clamps
    it, and this keeps the panel usable while testing. */
 @media (max-height: 800px) {
-  .opt { min-height: 50px; font-size: 15px; }
+  :root { --opt-h: 50px; --nav: 112px; }
+  .opt { font-size: 15px; }
   .side { font-size: 26px; border-radius: 16px; }
-  #row { grid-template-columns: 60px 1fr 60px; }
   #question { font-size: 20px; }
   #panel { padding: 14px 16px 14px; gap: 14px; }
 }

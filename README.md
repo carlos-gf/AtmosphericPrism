@@ -27,13 +27,18 @@ python3 -m http.server 8000
 3. Settings → Accessibility → **Guided Access** on, then triple-click the side
    button inside the app.
 4. Brightness to maximum, Auto-Brightness and True Tone off.
-5. Five taps in the **top-right corner** open the settings. Turn the alignment
-   outline on, stand the prism on the glass, nudge until the mirrors sit on the
-   line, turn it off.
+5. Five taps inside the **faint square in the top-right corner** open the
+   settings; its outline brightens as the taps land. Turn the alignment outline
+   on, stand the prism on the glass, nudge until the mirrors sit on the line,
+   turn it off.
 
 The triangle is sized in millimetres, not pixels. The default is 160.0 mm; set
 whatever your prism measures inside the mirrors. *Screen density* is there for
 other tablets (264 ppi is the iPad Pro 11").
+
+Settings also holds the one timing control: after someone answers, the source
+photograph stays in the prism for **10 seconds** by default, then the next
+atmosphere comes up on its own. Adjustable from 3 to 60 seconds.
 
 ## Changing the words
 
